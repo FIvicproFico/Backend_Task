@@ -1,0 +1,22 @@
+{
+  "name": "backend_task",
+  "version": "1.0.0",
+  "description": "random joke task",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FIvicproFico/Backend_Task.git"
+  },
+  "author": "Filip Ivic",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FIvicproFico/Backend_Task/issues"
+  },
+  "homepage": "https://github.com/FIvicproFico/Backend_Task#readme",
+  "dependencies": {
+    "express": "^4.17.2"
+  }
+}
