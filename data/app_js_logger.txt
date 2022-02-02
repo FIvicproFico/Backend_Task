@@ -1,0 +1,23 @@
+const express = require('express')
+const app = express()
+
+// The middleware function myLogger simply prints a message,
+// then passes on the request to the next middleware function in the stack by calling the next() function.
+const myLogger = (req, res, next) => {
+  console.log('LOGGED')
+  next()
+}
+
+//Every time the app receives a request, it prints the message “LOGGED” to the terminal.
+app.use(myLogger)
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+// If myLogger is loaded after the route to the root path,
+// the request never reaches it and the app doesn’t print “LOGGED”,
+// because the route handler of the root path terminates the request-response cycle.
+// app.use(myLogger)
+
+app.listen(3000)

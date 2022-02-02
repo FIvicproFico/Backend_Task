@@ -1,0 +1,20 @@
+const express = require('express')
+const app = express()
+
+// add a property called requestTime to the request object.
+const requestTime = (req, res, next) => {
+  req.requestTime = Date.now()
+  next()
+}
+
+app.use(requestTime)
+
+// the callback function of the root path route uses the property
+// that the middleware function adds to req (the request object).
+app.get('/', (req, res) => {
+  let responseText = '<br>Hello World!<br>'
+  responseText += '<small>Requested at: ' + req.requestTime + '</small>'
+  res.send(responseText)
+})
+
+app.listen(3000)

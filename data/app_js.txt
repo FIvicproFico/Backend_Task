@@ -1,0 +1,76 @@
+const express = require('express')
+const app = express()
+const port = 3000
+
+var birds = require('./birds')
+
+
+//To serve static files such as images, CSS files, and JavaScript files,
+app.use(express.static('public'))
+
+//You can also use app.all() to handle all HTTP methods
+app.all('/secret', function (req, res, next) {
+    console.log('Accessing the secret section ...')
+    res.send('Accessing the secret section ...')
+    next() // pass control to the next handler
+})
+
+
+// respond with "hello world" when a GET request is made to the homepage
+app.get('/', function (req, res) {
+    res.send('hello world')
+})
+
+app.post('/', function (req, res) {
+    res.send('Got a POST request !!!')
+})
+
+
+app.get('/users', function(req, res) {
+    res.send('Hello User !!!')
+})
+
+app.get('/users/:userId/books/:bookId', function (req, res) {
+    res.send(req.params)
+    console.log(req.params.userId)
+})
+
+//More than one callback function can handle a route (next object)
+app.get('/example/b', function (req, res, next) {
+    console.log('the response will be sent by the next function ...')
+    next()
+}, function (req, res) {
+    res.send('Hello from B!')
+})
+
+//Multiple callback functions can handle a route
+app.get('/example/c', (req, res, next) => {
+    console.log('Callback function 1')
+    next()
+}, (req, res, next) => {
+    console.log('Callback function 2')
+    next()
+}, (req, res, next) => {
+    res.send("Hello from C!")
+})
+
+//A combination of independent functions and arrays of functions can handle a route. For example:
+let cb0 = function (req, res, next) {
+    console.log('CB0')
+    next()
+}
+  
+app.get('/example/d', cb0, function (req, res, next) {
+    console.log('the response will be sent by the next function ...')
+    next()
+}, function (req, res) {
+    res.send('Hello from D!')
+})
+
+//The following example creates a router as a module, loads a middleware function in it, defines some routes, and mounts the router module on a path in the main app.
+app.use('/birds', birds)
+
+
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+})
