@@ -1,11 +1,9 @@
 const express = require('express')
-
 var bodyParser = require('body-parser')
 const uuid = require("uuid");
 let users = require("../data/Users");
 
 const router = express.Router()
-
 let jsonParser = bodyParser.json()
 
 // a middleware function with no mount path. This code is executed for every request to the router
