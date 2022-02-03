@@ -5,7 +5,9 @@ const bodyParser = require('body-parser')
 
 const app = express()
 const port = 3000
-const accessTokenSecret = 'test_secret'
+const accessTokenSecret = 'test_access_token_secret'
+const refreshTokenSecret = 'test_refresh_token_secret';
+const refreshTokens = [];
 
 //Database
 const users = [
@@ -77,13 +79,17 @@ app.post('/login', (req, res) => {
 
     if (user) {
         // Generate an access token
-        const accessToken = jwt.sign({ username: user.username,  role: user.role }, accessTokenSecret)
-        console.log("Gen. token: \t " + accessToken.slice(0,10) + "..." + accessToken.slice(-10))
+        const accessToken = jwt.sign({ username: user.username,  role: user.role }, accessTokenSecret, { expiresIn: '20m' })
+        const refreshToken = jwt.sign({ username: user.username, role: user.role }, refreshTokenSecret);
+
+        refreshTokens.push(refreshToken);
 
         res.json({
-            accessToken
+            accessToken,
+            refreshToken
         })
-        console.log("Response: \t " + accessToken.slice(0,10) + "..." + accessToken.slice(-10) + "\n")
+        console.log("Response: \t " + accessToken.slice(0,10) + "..." + accessToken.slice(-10))
+        console.log("\t\t " + refreshToken.slice(0,10) + "..." + refreshToken.slice(-10) + "\n")
         
     } else {
         res.send('Username or password incorrect');
