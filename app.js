@@ -2,12 +2,11 @@ const express = require('express')
 const usersRouter = require('./routes/users.routes')
 const jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser')
+const authenticateJWT = require('./middlewares/authentificateJWT')
+const {accessTokenSecret, refreshTokenSecret, refreshTokens} = require('./constant/tokens')
 
 const app = express()
 const port = 3000
-const accessTokenSecret = 'test_access_token_secret'
-const refreshTokenSecret = 'test_refresh_token_secret';
-const refreshTokens = [];
 
 //Database
 const users = [
@@ -22,29 +21,6 @@ const users = [
     }
 ];
 
-//Middleware function
-const authenticateJWT = (req, res, next) => {
-
-    console.log("MIDDLEWARE: \t AUTHENTIFICATION")
-    console.log("Req. headers: \t " + JSON.stringify(req.headers.authorization.slice(0,17) + "..." + req.headers.authorization.slice(-10)))
-    const authHeader = req.headers.authorization;
-    
-    if (authHeader) {
-        const token = authHeader.split(' ')[1];
-
-        jwt.verify(token, accessTokenSecret, (err, user) => {
-            if (err) {
-                return res.sendStatus(403);
-            }
-
-            //req.user = user;
-            res.locals.user = user;
-            next();
-        });
-    } else {
-        res.sendStatus(401);
-    }
-};
 
 app.use(bodyParser.json())
 //app.use('/users', usersRouter)
