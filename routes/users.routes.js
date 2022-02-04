@@ -45,7 +45,7 @@ router.post('/', authenticateJWT, authorization, (req, res) => {
 
     console.log("POST: \t\t /users")
     console.log("Request body: \t " + JSON.stringify(req.body))
-    console.log("From middleware: " + JSON.stringify(res.locals.user.role));
+    console.log("From middleware: " + JSON.stringify(res.locals.user.role))
 
     const user = req.body
     users.push(user)
@@ -54,5 +54,28 @@ router.post('/', authenticateJWT, authorization, (req, res) => {
 
     res.json({user});
 });
+
+router.put('/:id', authenticateJWT, authorization, (req, res) => {
+
+    console.log("PUT: \t\t /users/:id")
+    console.log("Request body: \t " + JSON.stringify(req.body))
+    //console.log("From middleware: " + JSON.stringify(res.locals.user.role))
+
+    const foundUser = users.find((user) => user.id === parseInt(req.params.id))
+
+    if(foundUser){
+
+        foundUser.username = req.body.username;
+
+        console.log("Response: \t " + "User Name Updated\n")
+
+        res.write("User Name Updated");   
+        res.write(" !");
+        res.end();
+
+    }else{
+        return res.sendStatus(404);
+    }
+})
 
 module.exports = router
