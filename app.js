@@ -21,7 +21,9 @@ app.get('/', (_, res) => {
 // With GET to path '/users' we get all users (if authentificated)
 // With POST to path '/users' we add new user (if authorized)
 
-app.listen(port, () => {
-    console.log(`App running on port ${port}`)
-    console.log("\n")
-})
+// app.listen(port, () => {
+//     console.log(`App running on port ${port}`)
+//     console.log("\n")
+// })
+
+module.exports = app;

@@ -1,5 +1,9 @@
 # Backend_Task
 
+```
+$ npm run start:dev
+```
+
 ### Missing tokens.js file in constants folder with content:
 
 ```

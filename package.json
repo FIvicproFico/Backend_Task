@@ -4,6 +4,7 @@
   "description": "random joke task",
   "main": "app.js",
   "scripts": {
+    "start:dev": "nodemon ./bin/www",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,6 +22,7 @@
     "express": "^4.17.2",
     "jsonwebtoken": "^8.5.1",
     "nodemon": "^2.0.15",
+    "sequelize": "^6.15.0",
     "uuid": "^8.3.2"
   }
 }
