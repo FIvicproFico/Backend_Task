@@ -4,7 +4,7 @@ const {accessTokenSecret, refreshTokenSecret, refreshTokens} = require('../const
 
 const authenticateJWT = (req, res, next) => {
 
-    console.log("MIDDLEWARE: \t AUTHENTIFICATION")
+    console.log("MIDDLEWARE: \t AUTHENTICATION")
     console.log("Req. headers: \t " + JSON.stringify(req.headers.authorization.slice(0,17) + "..." + req.headers.authorization.slice(-10)))
     const authHeader = req.headers.authorization;
     

@@ -1,14 +1,15 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const users = require('../data/Users')
-const authenticateJWT = require('../middlewares/authentificateJWT')
+const authenticateJWT = require('../middlewares/authenticationJWT')
+const authorization = require('../middlewares/authorization')
 
 const router = express.Router()
 
 router.use(bodyParser.json())
 
 router.use((_, __, next) => {
-    console.log('Users!')
+    console.log('Users Route!')
     next()
 })
 
@@ -20,24 +21,36 @@ router.get('/', authenticateJWT, (req, res) => {
     res.json({users});
 });
 
-router.post('/', authenticateJWT, (req, res) => {
+// a middleware sub-stack that handles GET requests to the /users/:id path
+router.get('/:id', authenticateJWT, (req, res, next)=>{
+
+    console.log("GET: \t\t /users/:id")
+
+    if (req.params.id === '0')
+        next("route")
+    else
+        next()
+}, (req, res) => {
+    console.log("\t \t MEMEBER ")
+    res.json(users.find((user) => user.id === parseInt(req.params.id)))
+})
+
+// handler for the /user/:id path, which returns only an admin
+router.get('/:id', (req, res) => {
+    console.log("\t \t ADMIN ")
+    res.json(users[0])
+})
+
+router.post('/', authenticateJWT, authorization, (req, res) => {
 
     console.log("POST: \t\t /users")
     console.log("Request body: \t " + JSON.stringify(req.body))
     console.log("From middleware: " + JSON.stringify(res.locals.user.role));
 
-    let user = ""
-    const role  = res.locals.user.role;
-
-    if (role !== 'admin') {
-        return res.sendStatus(403);
-    }
-
-    console.log("\t \t AUTHORIZED ")
-    console.log("Response: \t " + "Added new user from request body\n")
-
-    user = req.body
+    const user = req.body
     users.push(user)
+
+    console.log("Response: \t " + "Added new user from request body\n")
 
     res.json({user});
 });

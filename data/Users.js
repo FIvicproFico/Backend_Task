@@ -24,10 +24,12 @@
 
 const users = [
     {
+        id: 0,
         username: 'filip',
         password: 'password123admin',
         role: 'admin'
     }, {
+        id: 1,
         username: 'anna',
         password: 'password123member',
         role: 'member'

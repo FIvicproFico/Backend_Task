@@ -36,8 +36,10 @@ router.get('/', (req, res, next) => {
 
 // a middleware sub-stack that handles GET requests to the /users/:id path
 router.get('/:id', (req, res, next) => {
-    if (req.params.id === '0') next('route')
-    else next()
+    if (req.params.id === '0')
+        next('route')
+    else 
+        next()
 }, (req, res, next) => {
     //res.send("User " + req.params.id)
     res.json(users.filter(user => user.id === parseInt(req.params.id)));

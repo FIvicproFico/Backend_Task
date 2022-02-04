@@ -9,7 +9,7 @@ const router = express.Router()
 router.use(bodyParser.json())
 
 router.use((req, res, next) => {
-    console.log('Login!')
+    console.log('Login Route!')
     next()
 })
 
@@ -33,7 +33,8 @@ router.post('/', (req, res) => {
 
     if (user) {
         // Generate an access token
-        const accessToken = jwt.sign({ username: user.username,  role: user.role }, accessTokenSecret, { expiresIn: '20m' })
+        //const accessToken = jwt.sign({ username: user.username,  role: user.role }, accessTokenSecret, { expiresIn: '20m' })
+        const accessToken = jwt.sign({ username: user.username,  role: user.role }, accessTokenSecret)
         const refreshToken = jwt.sign({ username: user.username, role: user.role }, refreshTokenSecret);
 
         refreshTokens.push(refreshToken);
