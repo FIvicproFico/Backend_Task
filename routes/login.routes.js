@@ -1,9 +1,8 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken')
-
 const users = require('../data/Users')
-const {accessTokenSecret, refreshTokenSecret, refreshTokens} = require('../constant/tokens')
+const {accessTokenSecret, refreshTokenSecret, refreshTokens} = require('../constants/tokens')
 
 const router = express.Router()
 

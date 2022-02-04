@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
-const {accessTokenSecret, refreshTokenSecret, refreshTokens} = require('../constant/tokens')
+
+const {accessTokenSecret, refreshTokenSecret, refreshTokens} = require('../constants/tokens')
 
 const authenticateJWT = (req, res, next) => {
 
@@ -14,8 +15,6 @@ const authenticateJWT = (req, res, next) => {
             if (err) {
                 return res.sendStatus(403)
             }
-
-            //req.user = user;
             res.locals.user = user
             next()
         })

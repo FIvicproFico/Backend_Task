@@ -1,106 +1,45 @@
 const express = require('express')
-var bodyParser = require('body-parser')
-const uuid = require("uuid");
-let users = require("../data/Users");
+const bodyParser = require('body-parser')
+const users = require('../data/Users')
+const authenticateJWT = require('../middlewares/authentificateJWT')
 
 const router = express.Router()
-let jsonParser = bodyParser.json()
 
-// a middleware function with no mount path. This code is executed for every request to the router
-router.use((req, res, next) => {
-    console.log('Time:', Date.now())
+router.use(bodyParser.json())
+
+router.use((_, __, next) => {
+    console.log('Users!')
     next()
 })
 
-// a middleware sub-stack shows request info for any type of HTTP request to the /users
-router.use('/', (req, res, next) => {
-    console.log('Users')
-    next()
-})
+router.get('/', authenticateJWT, (req, res) => {
 
-// a middleware sub-stack shows request info for any type of HTTP request to the /users/:id path
-router.use('/:id', (req, res, next) => {
-    console.log('Request URL:', req.originalUrl)
-    next()
-}, (req, res, next) => {
-    console.log('Request Type:', req.method)
-    next()
-})
+    console.log("GET: \t\t /users")
+    console.log("Response: \t " + "Display all users\n")
 
-//GET
-// a middleware sub-stack that handles GET requests to the /users
-router.get('/', (req, res, next) => {
-    //res.send("All Users!")
-    res.json(users)
-})
-
-// a middleware sub-stack that handles GET requests to the /users/:id path
-router.get('/:id', (req, res, next) => {
-    if (req.params.id === '0') next('route')
-    else next()
-}, (req, res, next) => {
-    //res.send("User " + req.params.id)
-    res.json(users.filter(user => user.id === parseInt(req.params.id)));
-})
-
-// handler for the /user/:id path, which renders a special page
-router.get('/:id', (req, res, next) => {
-    console.log("Special User")
-    next()
-},(req, res, next) => {
-    res.json(users[0])
-})
-
-//POST
-router.post("/", jsonParser, (req, res) => {
-
-    //console.log('request', req.body);
-    const newUser = {
-      id: uuid.v4(),
-      name: req.body.name,
-      email: req.body.email
-    };
-
-    if (!newUser.name || !newUser.email) {
-        return res.sendStatus(400);
-    }
-
-    users.push(newUser);
-    res.send("User Added");   
+    res.json({users});
 });
 
-//PUT
-router.put("/:id", jsonParser, (req, res) => {
+router.post('/', authenticateJWT, (req, res) => {
 
-    //console.log('request', req.body);
-    const foundUser = users.find((user) => user.id === parseInt(req.params.id));
+    console.log("POST: \t\t /users")
+    console.log("Request body: \t " + JSON.stringify(req.body))
+    console.log("From middleware: " + JSON.stringify(res.locals.user.role));
 
-    if(foundUser){
-        foundUser.name = req.body.name;
-        foundUser.email = req.body.email;
-        res.write("User Updated");
-            
-        res.write(" !");
-        res.end();
+    let user = ""
+    const role  = res.locals.user.role;
 
-    }else{
-        return res.sendStatus(404);
+    if (role !== 'admin') {
+        return res.sendStatus(403);
     }
-});
 
+    console.log("\t \t AUTHORIZED ")
+    console.log("Response: \t " + "Added new user from request body\n")
 
-//DELETE
-router.delete("/:id", jsonParser, (req, res) => {
+    user = req.body
+    users.push(user)
 
-    //console.log('request', req.body);
-    const foundUser = users.find((user) => user.id === parseInt(req.params.id));
-
-    if(foundUser){
-        users = users.filter((user) => user.id !== parseInt(req.params.id))
-        res.send("User Deleted");   
-    }else{
-        return res.sendStatus(404);
-    }
+    res.json({user});
 });
 
 module.exports = router
