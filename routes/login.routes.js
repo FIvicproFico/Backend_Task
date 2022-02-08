@@ -14,9 +14,7 @@ router.use((req, res, next) => {
 })
 
 router.get('/', (req, res) => {
-
     console.log("GET: \t\t /login\n")
-
     res.send('Login!')
 })
 

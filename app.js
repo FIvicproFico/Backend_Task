@@ -1,13 +1,12 @@
 const express = require('express')
 
-const usersRouter = require('./routes/users.routes')
 const loginRouter = require('./routes/login.routes')
+const usersRouter = require('./routes/users.routes')
 
 const app = express()
-const port = 3000
 
-app.use('/users', usersRouter)
 app.use('/login', loginRouter)
+app.use('/users', usersRouter)
 
 app.get('/', (_, res) => {
     console.log("GET: \t\t /")
