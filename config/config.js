@@ -13,6 +13,7 @@ module.exports = {
     dialectOptions: {
       bigNumberStrings: true
     },
+    logging: true
     
   },
   test: {
