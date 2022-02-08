@@ -3,6 +3,9 @@ const bodyParser = require('body-parser')
 let users = require('../data/Users')
 const authenticateJWT = require('../middlewares/authenticationJWT')
 const authorization = require('../middlewares/authorization')
+const db = require('../models')
+
+//db.sequelize.sync()
 
 const router = express.Router()
 
@@ -18,8 +21,15 @@ router.get('/', authenticateJWT, (req, res) => {
     console.log("GET: \t\t /users")
     console.log("Response: \t " + "Display all users\n")
 
-    res.json({users})
-});
+    db.User.findAll({raw: true})
+    .then(data => {
+      console.log(data);
+      res.json({data})
+    })
+    .catch(err => {
+        console.log(err);
+    })
+})
 
 // a middleware sub-stack that handles GET requests to the /users/:id path
 router.get('/:id', authenticateJWT, (req, res, next)=>{
