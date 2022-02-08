@@ -9,9 +9,11 @@ module.exports = {
     host: process.env.DB_HOSTNAME,
     port: process.env.DB_PORT,
     dialect: 'mysql',
+    seederStorage: 'sequelize',
     dialectOptions: {
       bigNumberStrings: true
-    }
+    },
+    
   },
   test: {
     username: process.env.CI_DB_USERNAME,
