@@ -15,6 +15,16 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.database, config.username, config.password, config); // Created Sequelize instance with config file
 }
 
+// sequelize is promise
+sequelize
+ .authenticate()
+ .then(() => {
+  console.info('INFO - Database connected.')
+ })
+ .catch(err => {
+  console.error('ERROR - Unable to connect to the database:', err)
+ })
+
 fs
   .readdirSync(__dirname)
   .filter(file => {
