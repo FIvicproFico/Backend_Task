@@ -1,6 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const users = require('../data/Users')
+let users = require('../data/Users')
 const authenticateJWT = require('../middlewares/authenticationJWT')
 const authorization = require('../middlewares/authorization')
 
@@ -18,7 +18,7 @@ router.get('/', authenticateJWT, (req, res) => {
     console.log("GET: \t\t /users")
     console.log("Response: \t " + "Display all users\n")
 
-    res.json({users});
+    res.json({users})
 });
 
 // a middleware sub-stack that handles GET requests to the /users/:id path
@@ -52,7 +52,7 @@ router.post('/', authenticateJWT, authorization, (req, res) => {
 
     console.log("Response: \t " + "Added new user from request body\n")
 
-    res.json({user});
+    res.json({user})
 });
 
 router.put('/:id', authenticateJWT, authorization, (req, res) => {
@@ -67,14 +67,31 @@ router.put('/:id', authenticateJWT, authorization, (req, res) => {
 
         foundUser.username = req.body.username;
 
+        //Needs to actually change username
         console.log("Response: \t " + "User Name Updated\n")
 
-        res.write("User Name Updated");   
-        res.write(" !");
+        res.write("User Name Updated")   
+        res.write(" !")
         res.end();
 
     }else{
-        return res.sendStatus(404);
+        return res.sendStatus(404)
+    }
+})
+
+router.delete('/:id', authenticateJWT, authorization, (req, res) => {
+
+    console.log("DELETE: \t\t /users/:id")
+    console.log("Request body: \t " + JSON.stringify(req.body))
+
+    const foundUser = users.find((user) => user.id === parseInt(req.params.id))
+
+    if(foundUser){
+        users = users.filter((user) => user.id !== parseInt(req.params.id))
+        console.log("Response: \t " + "User Deleted\n")
+        res.send("User Deleted"); 
+    }else{
+        return res.sendStatus(404)
     }
 })
 
