@@ -11,8 +11,8 @@
 
     "seq:model": "npx sequelize-cli model:generate",
     
-    "seq:migration": "npx sequelize-cli db:migrate",
-    "seq:migration:undo": "npx sequelize-cli db:migrate:undo",
+    "seq:migrate": "npx sequelize-cli db:migrate",
+    "seq:migrate:undo": "npx sequelize-cli db:migrate:undo",
     "seq:migration:skeleton": "npx sequelize-cli migration:generate --name migration-skeleton",
 
     "seq:seed": "npx sequelize-cli db:seed:all",
