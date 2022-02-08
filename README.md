@@ -1,7 +1,7 @@
 # Backend_Task
 
 ```
-$ npm run start:dev
+$ npm run "script"
 ```
 ## MySQL
 
@@ -11,14 +11,10 @@ $ mysql.server stop
 $ mysql -u root -p
 ```
 
-### Missing tokens.js file in constants folder with content:
+## Sequelize
 
 ```
-tokens = {
-    accessTokenSecret :'secret token*',
-    refreshTokenSecret : '*secret refresh token*',
-    refreshTokens : [],
-}
+//Project bootstrapping
+$ npx sequelize-cli init
 
-module.exports = tokens
 ```

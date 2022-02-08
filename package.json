@@ -5,7 +5,19 @@
   "main": "app.js",
   "scripts": {
     "start:dev": "nodemon ./bin/www",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+
+    "seq:bootstrap": "npx sequelize-cli init",
+
+    "seq:model": "npx sequelize-cli model:generate",
+    
+    "seq:migration": "npx sequelize-cli db:migrate",
+    "seq:migration:undo": "npx sequelize-cli db:migrate:undo",
+    "seq:migration:skeleton": "npx sequelize-cli migration:generate --name migration-skeleton",
+
+    "seq:seed": "npx sequelize-cli db:seed:all",
+    "seq:seed:undo": "npx sequelize-cli db:seed:undo",
+    "seq:seed:skeleton": "npx sequelize-cli seed:generate --name demo-user"
   },
   "repository": {
     "type": "git",
