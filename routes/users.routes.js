@@ -1,10 +1,12 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 let users = require('../data/Users')
+const db = require('../models')
 const { v4: uuidv4 } = require('uuid');
 const authenticateJWT = require('../middlewares/authenticationJWT')
 const authorization = require('../middlewares/authorization')
-const db = require('../models')
+const service = require('../services/userServis')
+
 
 //db.sequelize.sync()
 
@@ -19,31 +21,11 @@ router.use((_, __, next) => {
 
 router.get('/', authenticateJWT, (req, res) => {
 
-    async function getUsers() {
-
-        console.log("GET: \t\t /users")
-        console.log("Response: \t " + "All Users displayed\n")
-
-        try{
-            const users = await db.User.findAll({raw: true})
-            //console.log(users)
-            res.json({users})
-        }
-        catch (error) {
-            console.error(error);
-        }  
-    }
-
-    getUsers();
-   
-    // db.User.findAll({raw: true})
-    // .then(data => {
-    //   //console.log(data);
-    //   res.json({data})
-    // })
-    // .catch(err => {
-    //     console.log(err)
-    // })
+    service.getUsers()
+    .then(data => {
+        console.log(data)
+        res.send({data})
+    })
 
     //res.json({users})
 })

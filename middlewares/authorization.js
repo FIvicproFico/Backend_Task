@@ -1,5 +1,3 @@
-
-
 const authorization = (req, res, next) => {
 
     console.log("MIDDLEWARE: \t AUTHORIZATION")
