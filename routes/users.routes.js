@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 let users = require('../data/Users')
+const { v4: uuidv4 } = require('uuid');
 const authenticateJWT = require('../middlewares/authenticationJWT')
 const authorization = require('../middlewares/authorization')
 const db = require('../models')
@@ -18,17 +19,33 @@ router.use((_, __, next) => {
 
 router.get('/', authenticateJWT, (req, res) => {
 
-    console.log("GET: \t\t /users")
-    console.log("Response: \t " + "Display all users\n")
+    async function getUsers() {
 
-    db.User.findAll({raw: true})
-    .then(data => {
-      console.log(data);
-      res.json({data})
-    })
-    .catch(err => {
-        console.log(err);
-    })
+        console.log("GET: \t\t /users")
+        console.log("Response: \t " + "All Users displayed\n")
+
+        try{
+            const users = await db.User.findAll({raw: true})
+            //console.log(users)
+            res.json({users})
+        }
+        catch (error) {
+            console.error(error);
+        }  
+    }
+
+    getUsers();
+   
+    // db.User.findAll({raw: true})
+    // .then(data => {
+    //   //console.log(data);
+    //   res.json({data})
+    // })
+    // .catch(err => {
+    //     console.log(err)
+    // })
+
+    //res.json({users})
 })
 
 // a middleware sub-stack that handles GET requests to the /users/:id path
@@ -36,19 +53,41 @@ router.get('/:id', authenticateJWT, (req, res, next)=>{
 
     console.log("GET: \t\t /users/:id")
 
-    if (req.params.id === '0')
+    if (req.params.id === '1')
         next("route")
     else
         next()
 }, (req, res) => {
+
     console.log("\t \t MEMEBER ")
-    res.json(users.find((user) => user.id === parseInt(req.params.id)))
+
+    db.User.findByPk(parseInt(req.params.id))
+    .then(data => {
+        res.json({data})
+     })
+    .catch(err => {
+          console.log(err)
+     })
+
+    // const user = users.find((user) => user.id === parseInt(req.params.id))
+    // res.json({user})
 })
 
 // handler for the /user/:id path, which returns only an admin
 router.get('/:id', (req, res) => {
+
     console.log("\t \t ADMIN ")
-    res.json(users[0])
+
+    //res.json(db.User.findByPk(1))   // !!! db.User.findByPk(1) is async function, we need to wait for data reaveal first to display data to user !!!
+    db.User.findByPk(1)
+    .then(data => {
+        res.json({data})
+    })
+    .catch(err => {
+        console.log(err);
+    })
+
+     // res.json({user[0]})
 })
 
 router.post('/', authenticateJWT, authorization, (req, res) => {
@@ -57,12 +96,20 @@ router.post('/', authenticateJWT, authorization, (req, res) => {
     console.log("Request body: \t " + JSON.stringify(req.body))
     console.log("From middleware: " + JSON.stringify(res.locals.user.role))
 
-    const user = req.body
-    users.push(user)
+    db.User.findOrCreate({
+        where: { username: req.body.username, password: req.body.password },
+        defaults: {
+            uuid: uuidv4(),
+            role: req.body.role
+        }
+    }).catch(err => {
+        console.log(err);
+    })
 
+    //users.push(user)
     console.log("Response: \t " + "Added new user from request body\n")
+    res.send("Response: \t " + "Added new user from request body\n")
 
-    res.json({user})
 });
 
 router.put('/:id', authenticateJWT, authorization, (req, res) => {
@@ -71,22 +118,42 @@ router.put('/:id', authenticateJWT, authorization, (req, res) => {
     console.log("Request body: \t " + JSON.stringify(req.body))
     //console.log("From middleware: " + JSON.stringify(res.locals.user.role))
 
-    const foundUser = users.find((user) => user.id === parseInt(req.params.id))
+    //const foundUser = users.find((user) => user.id === parseInt(req.params.id))
 
-    if(foundUser){
+    db.User.findByPk(parseInt(req.params.id))
+    .then(data => {
+        db.User.update({
+            username: req.body.username
+        },{
+            where: {
+                id: data.id
+            }
+        })
+        .then(data => {
+            res.send("Username updated")
+        })
+        .catch(err => {
+                console.log(err);
+        })
+     })
+    .catch(err => {
+          console.log(err)
+     })
 
-        foundUser.username = req.body.username;
+    // if(foundUser){
 
-        //Needs to actually change username
-        console.log("Response: \t " + "User Name Updated\n")
+    //     foundUser.username = req.body.username;
 
-        res.write("User Name Updated")   
-        res.write(" !")
-        res.end();
+    //     //Needs to actually change username
+    //     console.log("Response: \t " + "User Name Updated\n")
 
-    }else{
-        return res.sendStatus(404)
-    }
+    //     res.write("User Name Updated")   
+    //     res.write(" !")
+    //     res.end();
+
+    // }else{
+    //     return res.sendStatus(404)
+    // }
 })
 
 router.delete('/:id', authenticateJWT, authorization, (req, res) => {
@@ -94,15 +161,33 @@ router.delete('/:id', authenticateJWT, authorization, (req, res) => {
     console.log("DELETE: \t\t /users/:id")
     console.log("Request body: \t " + JSON.stringify(req.body))
 
-    const foundUser = users.find((user) => user.id === parseInt(req.params.id))
+    //const foundUser = users.find((user) => user.id === parseInt(req.params.id))
 
-    if(foundUser){
-        users = users.filter((user) => user.id !== parseInt(req.params.id))
-        console.log("Response: \t " + "User Deleted\n")
-        res.send("User Deleted"); 
-    }else{
-        return res.sendStatus(404)
-    }
+    db.User.findByPk(parseInt(req.params.id))
+    .then(data => {
+        db.User.destroy({
+            where:{
+                id: data.id
+            }
+        })
+        .then(data => {
+            res.json("User deleted")
+        })
+        .catch(err => {
+                console.log(err);
+        })
+     })
+    .catch(err => {
+          console.log(err)
+     })
+
+    // if(foundUser){
+    //     users = users.filter((user) => user.id !== parseInt(req.params.id))
+    //     console.log("Response: \t " + "User Deleted\n")
+    //     res.send("User Deleted"); 
+    // }else{
+    //     return res.sendStatus(404)
+    // }
 })
 
 module.exports = router
