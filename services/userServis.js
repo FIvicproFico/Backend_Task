@@ -1,5 +1,7 @@
 const db = require('../models')
 
+//TODO: Make Class for exporting
+
 const getUsers = async () => {
 
     console.log("GET: \t\t /users")

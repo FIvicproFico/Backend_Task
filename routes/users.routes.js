@@ -7,9 +7,6 @@ const authenticateJWT = require('../middlewares/authenticationJWT')
 const authorization = require('../middlewares/authorization')
 const service = require('../services/userServis')
 
-
-//db.sequelize.sync()
-
 const router = express.Router()
 
 router.use(bodyParser.json())
