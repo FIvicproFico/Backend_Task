@@ -1,7 +1,9 @@
-'use strict';
+'use strict';   //With strict mode you can not use undeclared variables.
+
 const {
   Model
-} = require('sequelize');
+} = require('sequelize')
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -14,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   User.init({
+    uuid: DataTypes.UUID,
     username: DataTypes.STRING,
     password: DataTypes.STRING,
     role: DataTypes.STRING
