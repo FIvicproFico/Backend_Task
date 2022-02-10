@@ -1,14 +1,10 @@
 const express = require('express')
-const bodyParser = require('body-parser')
-let users = require('../data/Users')
-const db = require('../models')
-const { v4: uuidv4 } = require('uuid');
 const authenticateJWT = require('../middlewares/authenticationJWT')
 const authorization = require('../middlewares/authorization')
-const service = require('../services/userServis')
+const bodyParser = require('body-parser')
+const userService = require('../services/userService')
 
 const router = express.Router()
-
 router.use(bodyParser.json())
 
 router.use((_, __, next) => {
@@ -17,13 +13,11 @@ router.use((_, __, next) => {
 })
 
 router.get('/', authenticateJWT, (req, res) => {
-
     console.log("GET: \t\t /users")
 
-    service.getUsers()
+    userService.getUsers()
     .then(users => res.send({users}))
     .catch(err => console.log(err))
-
     //res.json({users})
 })
 
@@ -36,7 +30,7 @@ router.get('/:id', authenticateJWT, (req, res, next) => {
         next()
 }, (req, res) => {
 
-    service.getUserById(parseInt(req.params.id))
+    userService.getUserById(parseInt(req.params.id))
     .then(user => res.send({user}))
     .catch(err => console.log(err))
 
@@ -48,7 +42,7 @@ router.get('/:id', authenticateJWT, (req, res, next) => {
 router.get('/:id', (req, res) => {
     console.log("\t \t ADMIN ")
 
-    service.getUserById(1)
+    userService.getUserById(1)
     .then(user => res.send({user}))
     .catch(err => console.log(err))
 
@@ -57,28 +51,26 @@ router.get('/:id', (req, res) => {
 })
 
 router.post('/', authenticateJWT, authorization, (req, res) => {
-
     console.log("POST: \t\t /users")
     console.log("Request Body: \t " + JSON.stringify(req.body))
     console.log("From Middleware: " + JSON.stringify(res.locals.user.role))
 
-    service.addNewUser(req.body.username, req.body.password, req.body.role)
+    userService.addNewUser(req.body.username, req.body.password, req.body.role)
     .then(() => {
         console.log("Response: \t " + "Added new user from request body\n")
         res.send("User Added!")
     })
-    .catch(err => console.log(err))
+    .catch(err => res.json(err.message))
 
     //users.push(user)
 });
 
 router.put('/:id', authenticateJWT, authorization, (req, res) => {
-
     console.log("PUT: \t\t /users/:id")
     console.log("Request Body: \t " + JSON.stringify(req.body))
     console.log("From Middleware: " + JSON.stringify(res.locals.user.role))
 
-    service.updateUsername(parseInt(req.params.id), req.body.username)
+    userService.updateUsername(parseInt(req.params.id), req.body.username)
     .then(() => {
         console.log("Response: \t " + "User Name Updated\n")
         res.send("Username Updated!")
@@ -99,11 +91,10 @@ router.put('/:id', authenticateJWT, authorization, (req, res) => {
 })
 
 router.delete('/:id', authenticateJWT, authorization, (req, res) => {
-
     console.log("DELETE: \t\t /users/:id")
     console.log("Request Body: \t " + JSON.stringify(req.body))
 
-    service.deleteUser(parseInt(req.params.id))
+    userService.deleteUser(parseInt(req.params.id))
     .then(() => {
         console.log("Response: \t " + "User Deleted\n")
         res.send("User Deleted!"); 
