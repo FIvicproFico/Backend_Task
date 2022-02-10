@@ -75,8 +75,8 @@ router.put('/:id', authenticateJWT, authorization, (req, res) => {
         console.log("Response: \t " + "User Name Updated\n")
         res.send("Username Updated!")
     })
-    .catch(err => console.log(err))
-
+    .catch(err => res.json(err.message))
+    
     //const foundUser = users.find((user) => user.id === parseInt(req.params.id))
     // if(foundUser){
     //     foundUser.username = req.body.username;

@@ -21,7 +21,7 @@ const getUserById = async (id) => {
         const user = await db.User.findByPk(id, {raw: true})
         return user
     } catch (error){
-        console.error(error);
+        console.log("Error handler for getUserByID")
     }
 }
 
@@ -83,23 +83,44 @@ const addNewUser = async (username , password, role) => {
 }
 
 const updateUsername = async (id, username) => {
-    
+
     try {
-        await getUserById(id)
-        .then(user => {
-            db.User.update({
+        const user = await getUserById(id)
+        try{
+            await db.User.update({
                 username: username
             },{
-                where:{
+                where: {
                     id: user.id
                 }
             })
-        })
-        .catch(err => console.log(err))
-
+        } catch (error){
+            console.error(error)
+            throw error
+        }
     } catch (error) {
         console.error(error)
+        throw error
     }
+    
+    // try {
+    //     await getUserById(id)
+    //     .then(user => {
+    //         db.User.update({
+    //             username: username
+    //         },{
+    //             where:{
+    //                 id: user.id
+    //             }
+    //         })
+    //     })
+    //     .catch(err => console.log(err))
+
+    //     //Da ovdje imam još ond atreba handleat!!! ?
+
+    // } catch (error) {
+    //     console.error(error)
+    // }
 }
 
 const deleteUser = async (id) => {
