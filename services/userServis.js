@@ -1,27 +1,85 @@
 const db = require('../models')
-
+const { v4: uuidv4 } = require('uuid');
 //TODO: Make Class for exporting
 
 const getUsers = async () => {
 
-    console.log("GET: \t\t /users")
-    console.log("Response: \t " + "All Users displayed\n")
-
     try{
         const users = await db.User.findAll({raw: true})
-        //console.log(users)
+        console.log("Response: \t " + "All Users displayed\n")
         return users
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error);
     }  
 }
 
-const postUsers = async () => {
-    console.log("POST: \t\t /users")
+const getUserById = async (id) => {
+
+    try{
+        const user = await db.User.findByPk(id, {raw: true})
+        return user
+    } catch (error){
+        console.error(error);
+    }
+}
+
+const addNewUser = async (username , password, role) => {
+
+    try{
+        const newUser = db.User.findOrCreate({
+            where: { username: username, password: password },
+            defaults: {
+                uuid: uuidv4(),
+                role: role
+            }
+        })
+    } catch (error){
+        console.error(error)
+    }
+}
+
+const updateUsername = async (id, username) => {
+    
+    try {
+        getUserById(id)
+        .then(user => {
+            db.User.update({
+                username: username
+            },{
+                where:{
+                    id: user.id
+                }
+            })
+        })
+        .catch(err => console.log(err))
+
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+const deleteUser = async (id) => {
+
+    try {
+        getUserById(id)
+        .then(user => {
+            db.User.destroy({
+                where: {
+                    id: user.id
+                }
+            })
+        })
+        .catch(err => console.log(err))
+
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 module.exports = {
     getUsers,
-    postUsers,
+    getUserById,
+    addNewUser,
+    updateUsername,
+    deleteUser
 }
