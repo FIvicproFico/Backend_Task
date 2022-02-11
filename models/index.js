@@ -17,13 +17,13 @@ if (config.use_env_variable) {
 
 // sequelize is promise
 sequelize
- .authenticate()
- .then(() => {
-  console.info('INFO - Database connected.')
- })
- .catch(err => {
-  console.error('ERROR - Unable to connect to the database:', err)
- })
+  .authenticate()
+  .then(() => {
+    console.info('INFO - Database connected.')
+  })
+  .catch(err => {
+    console.error('ERROR - Unable to connect to the database:', err)
+  })
 
 fs
   .readdirSync(__dirname)

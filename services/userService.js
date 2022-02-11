@@ -8,7 +8,23 @@ const getUsers = async () => {
 
     try{
         const users = await db.User.findAll({raw: true})
-        console.log("Response: \t " + "All Users displayed\n")
+        console.log("DB: \t " + "All Users displayed\n")
+        return users
+    } catch (error) {
+        console.error(error);
+        throw error
+    }  
+}
+
+const getUsersByUsername = async (username) => {
+
+    try{
+        const users = await db.User.findAll({
+            where: {
+                username: username
+            }
+        }, {raw: true})
+        console.log("DB: \t " + "All Users with username displayed\n")
         return users
     } catch (error) {
         console.error(error);
@@ -20,6 +36,7 @@ const getUserById = async (id) => {
 
     try{
         const user = await db.User.findByPk(id, {raw: true})
+        console.log("DB: \t " + "All Users with id displayed\n")
         return user
     } catch (error){
         console.error(error);
@@ -40,6 +57,7 @@ const addNewUser = async (username , password, role) => {
                 role: role
             }
         })
+        console.log("DB: \t " + "New User added!\n")
     } catch (error){
         // throw new Error(error); // !!! Ne valja ovako!
         // let moj_error = new Error('Moj_Error!!!');
@@ -97,6 +115,7 @@ const updateUsername = async (id, username) => {
                 id: user.id
             }
         })
+        console.log("DB: \t " + "Username updated!\n")
     } catch (error){
         console.error(error)
         throw error
@@ -112,6 +131,7 @@ const deleteUser = async (id) => {
                 id: user.id
             }
         })
+        console.log("DB: \t " + "User delete!\n")
     } catch (error) {
         console.error(error)
         throw error
@@ -120,6 +140,7 @@ const deleteUser = async (id) => {
 
 module.exports = {
     getUsers,
+    getUsersByUsername,
     getUserById,
     addNewUser,
     updateUsername,

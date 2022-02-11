@@ -1,11 +1,15 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt');
+const {accessTokenSecret} = require('../constants/tokens')
+const userService = require('../services/userService')
 const users = require('../data/Users')
-const {accessTokenSecret, refreshTokenSecret, refreshTokens} = require('../constants/tokens')
+
+// const util = require('util');
+// util.promisify
 
 const router = express.Router()
-
 router.use(bodyParser.json())
 
 router.use((req, res, next) => {
@@ -26,27 +30,20 @@ router.post('/', (req, res) => {
     // Read username and password from request body
     const { username, password } = req.body
 
-    // Filter user from the users array by username and password
-    const user = users.find(user => { return user.username === username && user.password === password })
-
-    if (user) {
-        // Generate an access token
-        //const accessToken = jwt.sign({ username: user.username,  role: user.role }, accessTokenSecret, { expiresIn: '20m' })
-        const accessToken = jwt.sign({ username: user.username,  role: user.role }, accessTokenSecret)
-        const refreshToken = jwt.sign({ username: user.username, role: user.role }, refreshTokenSecret);
-
-        refreshTokens.push(refreshToken);
-
-        res.json({
-            accessToken,
-            refreshToken
-        })
-        console.log("Response: \t " + accessToken.slice(0,10) + "..." + accessToken.slice(-10))
-        console.log("\t\t " + refreshToken.slice(0,10) + "..." + refreshToken.slice(-10) + "\n")
-        
-    } else {
-        res.send('Username or password incorrect');
-    }
+    userService.getUsersByUsername(username)
+    .then(users => {
+        const user = users.find(user => user.username === username && bcrypt.compareSync(password, user.password))
+        if (user){
+            // Generate an access token
+            //const accessToken = jwt.sign({ username: user.username,  role: user.role }, accessTokenSecret, { expiresIn: '20m' })
+            const accessToken = jwt.sign({ username: user.username,  role: user.role }, accessTokenSecret)
+            console.log("Response: \t " + accessToken.slice(0,10) + "..." + accessToken.slice(-10))
+            res.json({accessToken})
+        } else {
+            res.send('Response: \t' + 'Username or password incorrect\n');
+        }
+    })
+    .catch(err => res.json(err.message))
 })
 
 module.exports = router
