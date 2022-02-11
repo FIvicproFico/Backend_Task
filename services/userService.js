@@ -12,6 +12,7 @@ const getUsers = async () => {
         return users
     } catch (error) {
         console.error(error);
+        throw error
     }  
 }
 
@@ -21,7 +22,8 @@ const getUserById = async (id) => {
         const user = await db.User.findByPk(id, {raw: true})
         return user
     } catch (error){
-        console.log("Error handler for getUserByID")
+        console.error(error);
+        throw error
     }
 }
 
@@ -39,7 +41,7 @@ const addNewUser = async (username , password, role) => {
             }
         })
     } catch (error){
-        //throw new Error(error); // !!! Ne valja ovako!
+        // throw new Error(error); // !!! Ne valja ovako!
         // let moj_error = new Error('Moj_Error!!!');
         // throw moj_error
         console.error(error)
@@ -84,60 +86,35 @@ const addNewUser = async (username , password, role) => {
 
 const updateUsername = async (id, username) => {
 
-    try {
+    // Multiple awaits in same try??
+
+    try{
         const user = await getUserById(id)
-        try{
-            await db.User.update({
-                username: username
-            },{
-                where: {
-                    id: user.id
-                }
-            })
-        } catch (error){
-            console.error(error)
-            throw error
-        }
-    } catch (error) {
+        await db.User.update({
+            username: username
+        },{
+            where: {
+                id: user.id
+            }
+        })
+    } catch (error){
         console.error(error)
         throw error
     }
-    
-    // try {
-    //     await getUserById(id)
-    //     .then(user => {
-    //         db.User.update({
-    //             username: username
-    //         },{
-    //             where:{
-    //                 id: user.id
-    //             }
-    //         })
-    //     })
-    //     .catch(err => console.log(err))
-
-    //     //Da ovdje imam još ond atreba handleat!!! ?
-
-    // } catch (error) {
-    //     console.error(error)
-    // }
 }
 
 const deleteUser = async (id) => {
 
     try {
-        await getUserById(id)
-        .then(user => {
-            db.User.destroy({
-                where: {
-                    id: user.id
-                }
-            })
+        const user = await getUserById(id)
+        await db.User.destroy({
+            where: {
+                id: user.id
+            }
         })
-        .catch(err => console.log(err))
-
     } catch (error) {
         console.error(error)
+        throw error
     }
 }
 

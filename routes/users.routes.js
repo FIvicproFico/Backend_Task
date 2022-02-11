@@ -17,7 +17,7 @@ router.get('/', authenticateJWT, (req, res) => {
 
     userService.getUsers()
     .then(users => res.send({users}))
-    .catch(err => console.log(err))
+    .catch(err => res.json(err.message))
     //res.json({users})
 })
 
@@ -32,7 +32,7 @@ router.get('/:id', authenticateJWT, (req, res, next) => {
 
     userService.getUserById(parseInt(req.params.id))
     .then(user => res.send({user}))
-    .catch(err => console.log(err))
+    .catch(err => res.json(err.message))
 
     // const user = users.find((user) => user.id === parseInt(req.params.id))
     // res.json({user})
@@ -44,7 +44,7 @@ router.get('/:id', (req, res) => {
 
     userService.getUserById(1)
     .then(user => res.send({user}))
-    .catch(err => console.log(err))
+    .catch(err => res.json(err.message))
 
     //res.json(db.User.findByPk(1))   // !!! db.User.findByPk(1) is async function, we need to wait for data reaveal first to display data to user !!!
     // res.json({user[0]})
@@ -99,7 +99,7 @@ router.delete('/:id', authenticateJWT, authorization, (req, res) => {
         console.log("Response: \t " + "User Deleted\n")
         res.send("User Deleted!"); 
     })
-    .catch(err => console.log(err))
+    .catch(err => res.json(err.message))
 
     // const foundUser = users.find((user) => user.id === parseInt(req.params.id))
     // if(foundUser){
