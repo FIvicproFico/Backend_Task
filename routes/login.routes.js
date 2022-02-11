@@ -1,16 +1,13 @@
 const express = require('express')
-const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
 const {accessTokenSecret} = require('../constants/tokens')
 const userService = require('../services/userService')
-const users = require('../data/Users')
 
 // const util = require('util');
 // util.promisify
 
 const router = express.Router()
-router.use(bodyParser.json())
 
 router.use((req, res, next) => {
     console.log('Login Route!')

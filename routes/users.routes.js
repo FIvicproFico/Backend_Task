@@ -1,11 +1,9 @@
 const express = require('express')
 const authenticateJWT = require('../middlewares/authenticationJWT')
 const authorization = require('../middlewares/authorization')
-const bodyParser = require('body-parser')
 const userService = require('../services/userService')
 
 const router = express.Router()
-router.use(bodyParser.json())
 
 router.use((_, __, next) => {
     console.log('Users Route!')
