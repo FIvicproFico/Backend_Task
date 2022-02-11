@@ -53,7 +53,7 @@ router.post('/', authenticateJWT, authorization, (req, res) => {
     console.log("Request Body: \t " + JSON.stringify(req.body))
     console.log("From Middleware: " + JSON.stringify(res.locals.user.role))
 
-    userService.addNewUser(req.body.username, req.body.password, req.body.role)
+    userService.addNewUser(req.body.username, req.body.password, req.body.email, req.body.role)
     .then(() => {
         console.log("Response: \t " + "Added new user from request body\n")
         res.send("User Added!")

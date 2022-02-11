@@ -16,16 +16,16 @@ class UserService {
         }  
     }
     
-    getUsersByUsername = async (username) => {
+    getUserByEmail = async (email) => {
     
         try{
-            const users = await db.User.findAll({
+            const user = await db.User.findAll({
                 where: {
-                    username: username
+                    email
                 }
             }, {raw: true})
-            console.log("DB: \t " + "All Users with username displayed\n")
-            return users
+            console.log("DB: \t " + "User with emaail displayed\n")
+            return user
         } catch (error) {
             console.error(error);
             throw error
@@ -44,14 +44,14 @@ class UserService {
         }
     }
     
-    addNewUser = async (username , password, role) => {
+    addNewUser = async (username , password, email, role) => {
         
         try{
             const salt = bcrypt.genSaltSync(saltRounds)
             const hash = bcrypt.hashSync(password, salt)
     
             await db.User.findOrCreate({
-                where: { username },
+                where: { username, email },
                 defaults: {
                     password: hash,
                     uuid: uuidv4(),

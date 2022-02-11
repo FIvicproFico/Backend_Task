@@ -25,9 +25,9 @@ router.post('/', (req, res) => {
     console.log("Request body: \t" + JSON.stringify(req.body))
     
     // Read username and password from request body
-    const { username, password } = req.body
+    const { username, password, email } = req.body
 
-    userService.getUsersByUsername(username)
+    userService.getUserByEmail(email)
     .then(users => {
         const user = users.find(user => user.username === username && bcrypt.compareSync(password, user.password))
         if (user){
@@ -37,7 +37,7 @@ router.post('/', (req, res) => {
             console.log("Response: \t " + accessToken.slice(0,10) + "..." + accessToken.slice(-10))
             res.json({accessToken})
         } else {
-            res.send('Response: \t' + 'Username or password incorrect\n');
+            res.send('Response: \t' + 'Email incorrect\n');
         }
     })
     .catch(err => res.json(err.message))
