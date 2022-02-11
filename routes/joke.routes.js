@@ -12,21 +12,15 @@ router.get('/', (req, res) => {
     console.log("GET: \t /jokes\n")
 
     const name = "Filip"
-    //const surname = "Ivić"
     const surname = "Ivić"
 
-    const a = surname.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '')
-    const b = a.replace(/[š]/g, 's')
-    const c = b.replace(/[đ]/g, 'd')
-    const d = c.replace(/[č]/g, 'ć')
-    const e = d.replace(/[ć]/g, 'c')
-    const parsedSurname = e.replace(/[ž]/g, 'z')
+    const parsedSurname = surname.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '').replace(/[š]/g, 's').replace(/[đ]/g, 'd').replace(/[ć]/g, 'c').replace(/[č]/g, 'c').replace(/[ž]/g, 'z')
 
     axios.get(`http://api.icndb.com/jokes/random?firstName=${name}&lastName=${parsedSurname}`)
     .then((response) => {
         // handle success
         console.log("API: \t Success");
-        res.json(response.data.value.joke)
+        res.send(response.data.value.joke)
     })
     .catch((error) => {
         // handle error
