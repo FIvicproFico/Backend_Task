@@ -11,7 +11,10 @@ router.use('/', (req, res, next) => {
 router.get('/', (req, res) => {
     console.log("GET: \t /jokes\n")
 
-    axios.get('http://api.icndb.com/jokes/random')
+    const name = "Filip"
+    const surname = "Ivic"
+
+    axios.get(`http://api.icndb.com/jokes/random?firstName=${name}&lastName=${surname}`)
     .then((response) => {
         // handle success
         console.log("API: \t Success");
