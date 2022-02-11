@@ -12,9 +12,17 @@ router.get('/', (req, res) => {
     console.log("GET: \t /jokes\n")
 
     const name = "Filip"
-    const surname = "Ivic"
+    //const surname = "Ivić"
+    const surname = "Ivić"
 
-    axios.get(`http://api.icndb.com/jokes/random?firstName=${name}&lastName=${surname}`)
+    const a = surname.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '')
+    const b = a.replace(/[š]/g, 's')
+    const c = b.replace(/[đ]/g, 'd')
+    const d = c.replace(/[č]/g, 'ć')
+    const e = d.replace(/[ć]/g, 'c')
+    const parsedSurname = e.replace(/[ž]/g, 'z')
+
+    axios.get(`http://api.icndb.com/jokes/random?firstName=${name}&lastName=${parsedSurname}`)
     .then((response) => {
         // handle success
         console.log("API: \t Success");
@@ -22,7 +30,7 @@ router.get('/', (req, res) => {
     })
     .catch((error) => {
         // handle error
-        console.log(error);
+        console.log(error)
         throw error
     })
 })
