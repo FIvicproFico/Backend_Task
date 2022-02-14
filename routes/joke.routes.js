@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express')
 const axios = require('axios').default;
 const authenticateJWT = require('../middlewares/authenticationJWT')
@@ -25,10 +26,13 @@ router.get('/', authenticateJWT, (req, res) => {
         console.log("API: \t Success")
 
         const mailOptions = {
-            from: 'drol.pilif@gmail.com',
+            from: process.env.MAIL,
             to: res.locals.user.email,
             subject: 'Backend_Task',
-            text: response.data.value.joke
+            text: response.data.value.joke,
+            attachments: {
+                path: 'public/images/Elephant.jpeg'
+            }
         }
     
         emailService.sendMail(mailOptions)
