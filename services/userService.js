@@ -45,7 +45,7 @@ class UserService {
         }
     }
     
-    addNewUser = async (username , password, email, role) => {
+    addNewUser = async (username , password, name, surname, email, role) => {
         
         try{
             const salt = bcrypt.genSaltSync(saltRounds)
@@ -54,9 +54,11 @@ class UserService {
             await db.User.findOrCreate({
                 where: { username, email },
                 defaults: {
-                    password: hash,
                     uuid: uuidv4(),
-                    role: role
+                    password: hash,
+                    name,
+                    surname,
+                    role
                 }
             })
             console.log("DB: \t " + "New User added!\n")
