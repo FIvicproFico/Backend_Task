@@ -22,10 +22,11 @@ class UserService {
             const user = await db.User.findAll({
                 where: {
                     email
-                }
-            }, {raw: true})
-            console.log("DB: \t " + "User with emaail displayed\n")
-            return user
+                },
+                raw: true
+            })
+            console.log("DB: \t " + "User with email displayed\n")
+            return user[0]
         } catch (error) {
             console.error(error);
             throw error
