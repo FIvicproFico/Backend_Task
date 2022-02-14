@@ -14,7 +14,7 @@ router.get('/', authenticateJWT, (req, res) => {
     console.log("GET: \t /jokes\n")
 
     const name = res.locals.user.username
-    const surname = "Testić"
+    const surname = res.locals.user.surname
 
     const parsedName = name.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '').replace(/[š]/g, 's').replace(/[đ]/g, 'd').replace(/[ć]/g, 'c').replace(/[č]/g, 'c').replace(/[ž]/g, 'z').replace(/[^a-zA-Z ]/g, "")
     const parsedSurname = surname.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '').replace(/[š]/g, 's').replace(/[đ]/g, 'd').replace(/[ć]/g, 'c').replace(/[č]/g, 'c').replace(/[ž]/g, 'z').replace(/[^a-zA-Z ]/g, "")

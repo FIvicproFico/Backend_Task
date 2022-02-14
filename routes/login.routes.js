@@ -33,7 +33,7 @@ router.post('/', (req, res) => {
         if (user){
             // Generate an access token
             //const accessToken = jwt.sign({ username: user.username,  role: user.role }, accessTokenSecret, { expiresIn: '20m' })
-            const accessToken = jwt.sign({ username: user.username, email: user.email, role: user.role }, accessTokenSecret)
+            const accessToken = jwt.sign({ username: user.username, surname: user.surname, email: user.email, role: user.role }, accessTokenSecret)
             console.log("Response: \t " + accessToken.slice(0,10) + "..." + accessToken.slice(-10))
             res.json({accessToken})
         } else {
