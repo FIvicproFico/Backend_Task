@@ -1,8 +1,6 @@
-require('dotenv').config();
 const express = require('express')
-const axios = require('axios').default;
 const authenticateJWT = require('../middlewares/authenticationJWT')
-const emailService = require('../services/emailService')
+const randomJokeApiService = require('../services/randomJokeApiService')
 
 const router = express.Router()
 
@@ -16,34 +14,11 @@ router.get('/', authenticateJWT, (req, res) => {
 
     const name = res.locals.user.username
     const surname = res.locals.user.surname
+    const email = res.locals.user.email
 
-    const parsedName = name.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '').replace(/[š]/g, 's').replace(/[đ]/g, 'd').replace(/[ć]/g, 'c').replace(/[č]/g, 'c').replace(/[ž]/g, 'z').replace(/[^a-zA-Z ]/g, "")
-    const parsedSurname = surname.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '').replace(/[š]/g, 's').replace(/[đ]/g, 'd').replace(/[ć]/g, 'c').replace(/[č]/g, 'c').replace(/[ž]/g, 'z').replace(/[^a-zA-Z ]/g, "")
-
-    axios.get(`http://api.icndb.com/jokes/random?firstName=${parsedName}&lastName=${parsedSurname}`)
-    .then((response) => {
-        // handle success
-        console.log("API: \t Success")
-
-        const mailOptions = {
-            from: process.env.MAIL,
-            to: res.locals.user.email,
-            subject: 'Backend_Task',
-            text: response.data.value.joke,
-            attachments: {
-                path: 'public/images/Elephant.jpeg'
-            }
-        }
-    
-        emailService.sendMail(mailOptions)
-
-        res.send(response.data.value.joke)
-    })
-    .catch((error) => {
-        // handle error
-        console.log(error)
-        throw error
-    })
+    randomJokeApiService.sendRequest(name, surname, email)
+    .then(response => res.send(response.data.value.joke))
+    .catch(err => res.json(err.message))
 })
 
 module.exports = router
