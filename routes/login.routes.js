@@ -27,19 +27,18 @@ router.post('/', (req, res) => {
     // Read username and password from request body
     const { username, email, password, } = req.body
 
-    console.log(email)
     userService.getUserByEmail(email)
     .then(user => { 
         if (bcrypt.compareSync(password, user.password)){
             console.log("\t ACCESS GRANTED!")
             // Generate an access token
             //const accessToken = jwt.sign({ username: user.username,  role: user.role }, accessTokenSecret, { expiresIn: '20m' })
-            const accessToken = jwt.sign({ username: username, surname: user.surname, email: user.email, role: user.role }, accessTokenSecret)
+            const accessToken = jwt.sign({ username: user.username, surname: user.surname, email: user.email, role: user.role }, accessTokenSecret)
             console.log("Response: \t " + accessToken.slice(0,10) + "..." + accessToken.slice(-10))
             res.json({accessToken})
         } else {
             console.log("\t ACCESS DENIED!!!")
-            res.send('Response: \t' + 'Email incorrect\n');
+            res.send('Response: \t' + 'Email or Password incorrect\n');
         }
     })
     .catch(err => res.json(err.message))

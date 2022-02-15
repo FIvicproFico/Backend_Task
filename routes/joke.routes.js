@@ -16,7 +16,15 @@ router.get('/', authenticateJWT, (req, res) => {
     const surname = res.locals.user.surname
     const email = res.locals.user.email
 
-    randomJokeApiService.sendRequest(name, surname, email)
+    randomJokeApiService.sendNameSurnameRequest(name, surname, email)
+    .then(response => res.send(response.data.value.joke))
+    .catch(err => res.json(err.message))
+})
+
+router.get('/random', authenticateJWT, (req, res) => {
+    console.log("GET: \t /jokes/random\n")
+
+    randomJokeApiService.sendRequest()
     .then(response => res.send(response.data.value.joke))
     .catch(err => res.json(err.message))
 })
