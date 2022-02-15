@@ -11,8 +11,7 @@ const transporter = nodemailer.createTransport({
 
 class EmailService {
 
-    sendMail = (mailOptions) => {
-
+    sendMail = (mailOptions) => 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.log(error);
@@ -20,7 +19,6 @@ class EmailService {
                 console.log('Email sent: ' + info.response);
             }
         })
-    }
 }
 
 module.exports = new EmailService()

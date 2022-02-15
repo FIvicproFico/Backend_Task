@@ -12,11 +12,13 @@ router.use('/', (req, res, next) => {
 router.get('/', authenticateJWT, (req, res) => {
     console.log("GET: \t /jokes\n")
 
-    const name = res.locals.user.username
-    const surname = res.locals.user.surname
-    const email = res.locals.user.email
+    const {username, surname, email} = res.locals.user
 
-    randomJokeApiService.sendNameSurnameRequest(name, surname, email)
+    // const name = res.locals.user.username
+    // const surname = res.locals.user.surname
+    // const email = res.locals.user.email
+
+    randomJokeApiService.sendNameSurnameRequest(username, surname, email)
     .then(response => res.send(response.data.value.joke))
     .catch(err => res.json(err.message))
 })
